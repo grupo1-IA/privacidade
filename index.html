@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Privacidade e proteção de dados — CPAN-UFMS</title>
+<style>
+:root {
+  --ink: #0f172a;
+  --muted: #475569;
+  --blue: #1d4ed8;
+  --cyan: #0284c7;
+  --pale: #f0f6ff;
+  --line: #cbd5e1;
+  --green: #15803d;
+  --red: #b91c1c;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #030712;
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+#viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #030712;
+  touch-action: none;
+}
+#canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  will-change: transform;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+#connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25000px;
+  height: 25000px;
+  pointer-events: none;
+  z-index: 0;
+}
+.slide {
+  position: absolute;
+  width: 1100px;
+  height: 680px;
+  left: 0;
+  top: 0;
+  transform: translate(var(--x), var(--y));
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 32px;
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.45);
+  padding: 48px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  z-index: 1;
+}
+.slide:before {
+  content: "";
+  position: absolute;
+  right: -50px;
+  top: -50px;
+  width: 320px;
+  height: 320px;
+  background-image: radial-gradient(var(--blue) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.slide:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan), #38bdf8);
+}
+.topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+  border-bottom: 1.5px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+.kicker {
+  color: var(--blue);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+h1 {
+  font-size: 54px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin: 0 0 12px;
+  max-width: 950px;
+  color: var(--ink);
+}
+h2 {
+  font-size: 38px;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0 0 12px;
+  max-width: 920px;
+  color: var(--ink);
+}
+h3 {
+  font-size: 20px;
+  margin: 0 0 4px;
+  line-height: 1.25;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+p {
+  font-size: 20px;
+  line-height: 1.4;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+ul {
+  padding-left: 26px;
+  margin: 8px 0;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1.4;
+}
+li { margin: 6px 0; }
+strong { color: var(--ink); }
+.subtitle {
+  font-size: 22px;
+  line-height: 1.35;
+  max-width: 900px;
+  color: #334155;
+  font-weight: 500;
+}
+.meta {
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.5;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: var(--pale);
+  color: var(--blue);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+  position: relative;
+  z-index: 1;
+}
+.grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* Cartões com interatividade por clique simples */
+.card {
+  border: 2px solid #e2e8f0;
+  border-left: 5px solid var(--blue);
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border-radius: 16px;
+  padding: 14px 16px;
+  min-height: 105px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.card:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 6px 16px rgba(2,132,199,0.18);
+  transform: translateY(-2px);
+}
+.card.selected {
+  border: 2px solid var(--blue);
+  background: #eff6ff;
+  box-shadow: 0 0 0 4px rgba(29,78,216,0.15);
+}
+.card p {
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.35;
+}
+.card h3 { font-size: 19px; color: #1e293b; }
+
+/* Bloco do Exemplo Prático revelado ao clicar no card */
+.practical-example {
+  display: none;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-left: 3px solid #0284c7;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #0c4a6e;
+  background: #e0f2fe;
+  border-radius: 6px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+.card.selected .practical-example {
+  display: block;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.callout {
+  padding: 14px 18px;
+  border-left: 6px solid var(--cyan);
+  background: #f0f9ff;
+  border-radius: 0 14px 14px 0;
+  font-size: 20px;
+  line-height: 1.4;
+  color: #0c4a6e;
+  margin-top: 10px;
+  font-weight: 500;
+  border-top: 1px solid #bae6fd;
+  border-right: 1px solid #bae6fd;
+  border-bottom: 1px solid #bae6fd;
+}
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.flow span {
+  padding: 8px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: #f8fafc;
+  font-weight: 800;
+  font-size: 18px;
+  color: #1e293b;
+}
+.flow b {
+  color: var(--cyan);
+  font-size: 22px;
+}
+.quote {
+  font-size: 26px;
+  line-height: 1.3;
+  color: #1e293b;
+  font-weight: 700;
+  max-width: 900px;
+  border-left: 6px solid var(--blue);
+  padding-left: 18px;
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 2;
+  border-top: 1.5px solid #f1f5f9;
+  padding-top: 10px;
+}
+
+/* --- ESTILO ESPECÍFICO E TEMÁTICO DO SLIDE 1 (CAPA CYBER / SEGURANÇA) --- */
+.cover {
+  background: linear-gradient(135deg, #090d16 0%, #0f172a 60%, #1e1b4b 100%);
+  border: 2px solid #3b82f6;
+  color: #f8fafc;
+  box-shadow: 0 40px 90px -20px rgba(15, 23, 42, 0.9);
+}
+.cover .topline {
+  color: #94a3b8;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+.cover .kicker {
+  color: #38bdf8;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cover h1 {
+  font-size: 58px;
+  max-width: 950px;
+  background: linear-gradient(90deg, #ffffff, #60a5fa, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.cover .subtitle {
+  color: #cbd5e1;
+}
+.cover .institution {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #38bdf8;
+  display: inline-block;
+  background: rgba(14, 165, 233, 0.12);
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.cover .meta {
+  color: #94a3b8;
+}
+.cover .meta strong {
+  color: #f1f5f9;
+}
+.names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+  max-width: 950px;
+}
+.names span {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e2e8f0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.cover .card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1.5px solid rgba(59, 130, 246, 0.3);
+  border-left: 5px solid #38bdf8;
+}
+.cover .card:hover {
+  border-color: #60a5fa;
+  background: rgba(30, 41, 59, 0.9);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+}
+.cover .card.selected {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.4);
+}
+.cover .card h3 { color: #f8fafc; }
+.cover .card p { color: #94a3b8; }
+.cover .card .practical-example {
+  background: rgba(14, 165, 233, 0.15);
+  color: #7dd3fc;
+  border-left-color: #38bdf8;
+}
+.cover .footer {
+  color: #64748b;
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+.quiz-option {
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fff;
+  text-align: left;
+  font-size: 17px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.quiz-option:hover {
+  border-color: var(--blue);
+  background: #f0f6ff;
+  transform: scale(1.01);
+}
+.quiz-option.correct {
+  border-color: var(--green);
+  background: #f0fdf4;
+  color: #14532d;
+}
+.quiz-option.wrong {
+  border-color: var(--red);
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+.feedback {
+  min-height: 26px;
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 17px;
+}
+.refs { font-size: 16px; line-height: 1.35; }
+.refs p { font-size: 16px; line-height: 1.35; margin-bottom: 6px; }
+
+/* HUD Minimalista com Botões com Destaque no Hover */
+#hud {
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+  pointer-events: none;
+}
+.controls, .progress {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 5px 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+}
+button { font: inherit; }
+.ctrl {
+  border: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  min-width: 34px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ctrl.primary {
+  background: var(--blue);
+  color: #fff;
+}
+.ctrl:hover {
+  transform: scale(1.15);
+  background: var(--cyan);
+  filter: brightness(1.25);
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.6);
+}
+.ctrl:active {
+  transform: scale(1.05);
+}
+.ctrl:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+#counter {
+  font-size: 13px;
+  font-weight: 800;
+  color: #cbd5e1;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+#miniTitle {
+  font-size: 13px;
+  color: #94a3b8;
+  max-width: 28vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media(max-width: 700px) {
+  #hud { left: 8px; right: 8px; bottom: 8px; }
+  #miniTitle { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="viewport" aria-label="Apresentação interativa">
+  <div id="canvas">
+    <svg id="connections"></svg>
+  </div>
+</div>
+<div id="hud">
+  <div class="controls">
+    <button class="ctrl" id="prev" title="Slide anterior (←)">←</button>
+    <button class="ctrl" id="next" title="Próximo slide (→)">→</button>
+    <span id="counter">1 / 23</span>
+  </div>
+  <div class="progress">
+    <span id="miniTitle">Capa</span>
+    <button class="ctrl" id="zoomOut" title="Diminuir zoom">−</button>
+    <button class="ctrl" id="zoomIn" title="Aumentar zoom">+</button>
+    <button class="ctrl primary" id="present" title="Tela cheia">⛶ Apresentar</button>
+  </div>
+</div>
+<script>
+const slides = [
+{
+  type:"cover",
+  section:"Abertura",
+  title:"Privacidade e Proteção de Dados",
+  subtitle:"O que acontece com nossas informações no ambiente digital?",
+  body:`<div>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+      <div>
+        <div class="institution">CPAN-UFMS · LICENCIATURA EM COMPUTAÇÃO</div>
+        <p class="meta" style="margin-top:6px"><strong>Professor:</strong> Gilberto Xavier Loio</p>
+        <p class="meta" style="margin-top:2px"><strong>Acadêmicos:</strong></p>
+        <div class="names">
+          <span>Moisés Lopes</span>
+          <span>Jesiel da Silva</span>
+          <span>Wellington Oliveira</span>
+          <span>Soraia Miranda</span>
+          <span>Veronica Belmonte</span>
+          <span>Glaucio da Silva</span>
+        </div>
+      </div>
+      <div style="font-size: 60px; filter: drop-shadow(0 0 10px rgba(56,189,248,0.5)); opacity: 0.9;">🛡️</div>
+    </div>
+    
+    <div class="grid three" style="margin-top: 18px;">
+      <div class="card" data-practical="Exemplo Prático na Abertura: Na LGPD, uma foto ou e-mail corporativo só podem ser armazenados se houver finalidade e consentimento do titular.">
+        <h3>⚖️ Regulamentação (LGPD)</h3>
+        <p>Direitos fundamentais, regras de tratamento e transparência.</p>
+        <div class="practical-example"></div>
+      </div>
+      <div class="card" data-practical="Exemplo Prático na Abertura: Criptografia e autenticação de dois fatores (2FA) protegem contas institucionais contra vazamentos.">
+        <h3>🔒 Segurança Digital</h3>
+        <p>Proteção técnica de dados contra invasões e incidentes.</p>
+        <div class="practical-example"></div>
+      </div>
+      <div class="card" data-practical="Exemplo Prático na Abertura: Você tem o direito de solicitar a exclusão do seu cadastro em qualquer site ou aplicativo a qualquer momento.">
+        <h3>🌐 Cidadania no Ciberespaço</h3>
+        <p>Autonomia e responsabilidade no fluxo de informações.</p>
+        <div class="practical-example"></div>
+      </div>
+    </div>
+  </div>`
+},
+{section:"Roteiro",title:"A pergunta que guia nossa conversa",subtitle:"Por que um serviço precisa dos nossos dados e como deve cuidar deles?",body:`<div><div class="grid three">
+<div class="card" data-practical="Exemplo Prático: Mapear o formulário de cadastro de um app de entregas para identificar quais dados são realmente necessários."><h3>🔍 Entender</h3><p>Que informações são coletadas e por que têm valor estratégico.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Implantar termos de consentimento claros e criptografia ponta a ponta em sistemas acadêmicos."><h3>🛡️ Proteger</h3><p>Como privacidade, ética e LGPD orientam o tratamento seguro.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Definir funções claras de controlador e operador para a equipe de tecnologia da instituição."><h3>🤝 Responsabilizar</h3><p>O que cabe a quem coleta, usa, guarda ou compartilha dados.</p><div class="practical-example"></div></div>
+</div><div class="callout">Percurso acadêmico: Introdução → Ética → Privacidade → Tipos → LGPD → Responsabilidades → Práticas → Quiz → Conclusão.</div></div>`},
+{section:"Moisés Lopes · 1 de 3",title:"Vivemos cercados por dados",subtitle:"Quase toda atividade digital deixa algum tipo de registro informacional.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Ao usar aplicativos de mobilidade urbana, informamos nome, CPF, destino e geolocalização exata."><h3>📱 Ao usar aplicativos</h3><p>Informamos nome, e-mail, localização e preferências de uso.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Lojas virtuais registram dados do cartão de crédito, endereço de entrega e histórico de compras."><h3>🛒 Ao comprar on-line</h3><p>O serviço registra itens, endereço de entrega e dados de pagamento.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Sistemas acadêmicos guardam notas, frequência, IP de acesso e registros de matrícula."><h3>🎓 Ao estudar</h3><p>Plataformas registram matrículas, histórico de notas e acessos.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Cookies de rastreamento armazenam histórico de cliques para exibição de publicidade direcionada."><h3>🧭 Navegação passiva</h3><p>Cliques, páginas visitadas e padrões de comportamento são observados.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Moisés Lopes · 2 de 3",title:"Ética na Computação",subtitle:"Fazer o que é tecnicamente possível não significa que seja correto.",body:`<div><ul><li><strong>Respeito:</strong> Tratar pessoas com dignidade e preservar sua esfera íntima.</li><li><strong>Transparência:</strong> Explicar abertamente o que é coletado e a finalidade.</li><li><strong>Responsabilidade:</strong> Avaliar riscos e responder pelas decisões tecnológicas.</li><li><strong>Justiça:</strong> Evitar usos discriminatórios, abusivos ou manipulativos.</li></ul><div class="callout">Exemplo prático: Um aplicativo consegue rastrear localização, mas eticamente deve avaliar se isso é indispensável e justificar o motivo.</div></div>`},
+{section:"Moisés Lopes · 3 de 3",title:"Por que os dados interessam às organizações?",subtitle:"Eles ajudam a compreender necessidades e melhorar serviços — mas exigem limites.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Plataformas de streaming analisam o seu histórico para sugerir filmes com base em seus gostos."><h3>🎯 Personalização</h3><p>Lojas sugerem produtos com base em compras e buscas anteriores.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Bancos bloqueiam transferências atípicas no exterior para evitar fraudes financeiras."><h3>🔒 Segurança</h3><p>Bancos analisam movimentações para identificar eventuais fraudes.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Cantinas universitárias medem horários de maior movimento para otimizar filas."><h3>📊 Planejamento</h3><p>Instituições identificam horários de maior demanda por atendimento.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Algoritmos de crédito que utilizam perfis comportamentais para aplicar taxas abusivas."><h3>⚠️ Riscos</h3><p>Uso excessivo ou sem transparência pode expor e discriminar cidadãos.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Jesiel da Silva · 1 de 3",title:"Privacidade no ambiente digital",subtitle:"É o controle soberano sobre aspectos da nossa vida e informações pessoais.",body:`<div><p>Envolve o poder de decidir o que desejamos manter reservado e compreender o fluxo de circulação dos dados.</p><div class="grid three">
+<div class="card" data-practical="Exemplo Prático: Uso de autenticação em duas etapas (2FA) para impedir acessos não autorizados a contas."><h3>🔐 Confidencialidade</h3><p>Somente pessoas autorizadas acessam a informação.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Painéis de permissão que mostram quais aplicativos do celular acessam sua câmera ou microfone."><h3>👁️ Visibilidade</h3><p>Clareza absoluta sobre o que está sendo coletado e utilizado.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Desmarcar caixas de permissão de recebimento de ofertas de marketing (opt-out)."><h3>🧭 Autonomia</h3><p>Capacidade de exercer escolhas e direitos sobre os próprios dados.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Jesiel da Silva · 2 de 3",title:"Coleta ativa e coleta passiva",subtitle:"Nem sempre percebemos quando nossos dados estão sendo registrados.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Preencher um formulário online informando nome completo e e-mail para receber um material."><h3>✍️ Coleta Ativa</h3><p>A pessoa fornece a informação de modo consciente.<br><strong>Exemplo:</strong> Preencher um cadastro ou enviar um formulário.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Captura automática do seu endereço IP e tipo de navegador ao abrir uma página web."><h3>📍 Coleta Passiva</h3><p>O sistema registra dados em segundo plano durante a navegação.<br><strong>Exemplo:</strong> Registro automático de tempo de permanência e IP.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Jesiel da Silva · 3 de 3",title:"O que acontece quando a privacidade falha?",subtitle:"Uma informação exposta gera consequências diretas fora da internet.",body:`<div><div class="grid three">
+<div class="card" data-practical="Exemplo Prático: Uso de dados vazados para abertura de contas falsas e empréstimos em nome da vítima."><h3>🪪 Fraudes</h3><p>Uso de dados roubados por criminosos para se passar por outra pessoa.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: E-mails institucionais vazados que passam a receber propostas falsas de investimento."><h3>📨 Abordagens</h3><p>Recebimento em massa de mensagens indesejadas, spam e golpes.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Divulgação indevida de fotografias ou conversas privadas em redes sociais."><h3>⚠️ Exposição</h3><p>Vazamento de dados íntimos causando constrangimento e danos morais.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Wellington Oliveira · 1 de 3",title:"O que são dados pessoais?",subtitle:"Informações relacionadas a uma pessoa natural identificada ou identificável.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: O número de matrícula acadêmica associado ao CPF do estudante."><h3>🆔 Identificação Direta</h3><p>Nome completo, CPF, RG, número de telefone, e-mail e endereço.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Cruzamento de rotas de GPS com horários de check-in para descobrir a residência de alguém."><h3>🧩 Identificação Indireta</h3><p>Conjunto de dados que cruzados identificam alguém (hábitos e rotas).</p><div class="practical-example"></div></div>
+</div><div class="callout"><strong>Exemplo:</strong> “João, matrícula 12345, aluno do curso X” vincula o registro diretamente ao indivíduo.</div></div>`},
+{section:"Wellington Oliveira · 2 de 3",title:"E os dados pessoais sensíveis?",subtitle:"Informações que exigem proteção reforçada devido ao alto potencial discriminatório.",body:`<div><div class="grid three">
+<div class="card" data-practical="Exemplo Prático: Prontuário médico digital contendo histórico de tratamentos psiquiátricos ou diagnósticos clínicos."><h3>❤️ Saúde</h3><p>Laudos médicos, exames, diagnósticos e histórico clínico.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Cadastro de reconhecimento facial utilizado nas catracas de acesso de um prédio corporativo."><h3>🧬 Biometria e Genética</h3><p>Impressão digital, reconhecimento facial e DNA.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Ficha cadastral informando a filiação partidária ou religiosa de um trabalhador."><h3>🏛️ Convicções</h3><p>Origem racial, religião, opinião política e vida sexual.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Wellington Oliveira · 3 de 3",title:"Compare: pessoal × sensível",subtitle:"A diferença central reside na natureza do dado e no risco associado à exposição.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Lista de e-mails da turma enviada para a coordenação pedagógica.">
+<span class="pill">DADO PESSOAL</span><h3 style="margin-top:6px">Cadastro Acadêmico</h3><p>Nome, matrícula e e-mail institucional.<br><strong>Risco:</strong> Contato indevido ou spam.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Laudo de deficiência apresentado para solicitar atendimento especial em provas.">
+<span class="pill" style="background:#fef2f2;color:#991b1b">DADO SENSÍVEL</span><h3 style="margin-top:6px">Registro de Saúde</h3><p>Laudos médicos e condições clínicas.<br><strong>Risco:</strong> Discriminação e dano à dignidade.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Soraia Miranda · 1 de 3",title:"LGPD: para que existe?",subtitle:"A Lei nº 13.709/2018 estabelece diretrizes rígidas para o tratamento de dados.",body:`<div><p>Seu objetivo principal é proteger os direitos fundamentais de liberdade, privacidade e o livre desenvolvimento da personalidade.</p><div class="flow"><span>Coletar</span><b>→</b><span>Usar</span><b>→</b><span>Armazenar</span><b>→</b><span>Compartilhar</span><b>→</b><span>Eliminar</span></div></div>`},
+{section:"Soraia Miranda · 2 de 3",title:"Princípios que orientam o tratamento",subtitle:"Toda operação com dados deve ser respaldada por limites claros.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Coletar e-mail exclusivamente para envio de avisos de notas escolares."><h3>🎯 Finalidade</h3><p>Propósito legítimo, específico e informado ao titular.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Usar o e-mail coletado unicamente para fins educacionais, sem campanhas comerciais externas."><h3>🔄 Adequação</h3><p>Compatibilidade do uso com os propósitos informados.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Pedir apenas nome e e-mail, dispensando estado civil ou filiação em cadastros simples."><h3>📉 Necessidade</h3><p>Limitação da coleta ao mínimo indispensável.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Exibir aviso claro na tela de login sobre quais dados o sistema coleta e armazena."><h3>📢 Transparência</h3><p>Garantia de informações claras sobre o tratamento.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Armazenar bancos de dados em servidores seguros com firewall e criptografia ativada."><h3>🛡️ Segurança</h3><p>Medidas técnicas aptas a proteger os dados.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Impedir o uso de notas escolares para expor ou rotular alunos publicamente em murais."><h3>⚖️ Não Discriminação</h3><p>Proibição de uso para fins ilícitos ou abusivos.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Soraia Miranda · 3 de 3",title:"Exemplo: um cadastro para evento",subtitle:"A LGPD ajuda a filtrar o que realmente deve ser solicitado.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Solicitar nome para crachá e e-mail para envio do certificado digital."><h3>✅ Necessário</h3><p>Nome para inscrição e e-mail para envio da confirmação.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Exigir número de CPF e endereço completo para um evento gratuito e aberto ao público."><h3>❌ Excessivo</h3><p>Solicitar religião, CPF ou histórico médico sem justificativa real.</p><div class="practical-example"></div></div>
+</div><div class="callout"><strong>Regra de ouro:</strong> Para que preciso? (finalidade) | Combina? (adequação) | Consigo sem ele? (necessidade)</div></div>`},
+{section:"Veronica Belmonte · 1 de 3",title:"Quem participa do tratamento?",subtitle:"A LGPD define papéis claros para organizar as responsabilidades jurídicas.",body:`<div><div class="grid three">
+<div class="card" data-practical="Exemplo Prático: A Universidade Federal que decide criar o sistema de matrícula para novos alunos."><h3>🏢 Controlador</h3><p>A quem competem as decisões sobre as finalidades do tratamento.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: A empresa de software contratada para hospedar o banco de dados da matrícula."><h3>⚙️ Operador</h3><p>Quem realiza o tratamento de dados em nome do controlador.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Servidor designado para orientar alunos e responder solicitações da ANPD."><h3>📣 Encarregado</h3><p>Canal de comunicação entre controlador, titulares e a ANPD.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Veronica Belmonte · 2 de 3",title:"O titular tem direitos",subtitle:"O cidadão mantém total autonomia jurídica sobre suas informações.",body:`<div><ul><li>Confirmar a existência de tratamento e acessar seus dados.</li><li>Solicitar correção de dados incompletos, inexatos ou desatualizados.</li><li>Requerer anonimização, bloqueio ou eliminação de dados desnecessários.</li><li>Obter informações sobre compartilhamento com entidades públicas ou privadas.</li><li>Revogar o consentimento a qualquer momento, conforme a lei.</li></ul></div>`},
+{section:"Veronica Belmonte · 3 de 3",title:"Compartilhar também é responsabilidade",subtitle:"Enviar planilhas ou listas para terceiros é uma operação regulada.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Checar se o setor parceiro possui base legal para receber a lista de notas."><h3>🔍 Antes de enviar</h3><p>Verifique finalidade, base legal e se os dados são estritamente necessários.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Enviar arquivos protegidos por senha e nunca por links públicos abertos."><h3>🔒 Durante o envio</h3><p>Utilize canais criptografados e restrinja acessos indesejados.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Apagar a planilha enviada por e-mail após a conclusão do relatório."><h3>🗑️ Após o uso</h3><p>Respeite prazos de retenção e realize o descarte seguro.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Exibir apenas o nome abreviado do estudante em placares institucionais."><h3>🏫 Na universidade</h3><p>Listas de presença não devem expor CPFs ou telefones publicamente.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Glaucio da Silva · 1 de 3",title:"Como proteger os dados na prática?",subtitle:"A segurança digital eficaz integra tecnologia, processos e cultura organizacional.",body:`<div><div class="grid three">
+<div class="card" data-practical="Exemplo Prático: Ativar verificação em duas etapas (2FA) em contas de e-mail institucionais."><h3>🔑 Controle de Acesso</h3><p>Emprego de senhas fortes e autenticação em duas etapas (2FA).</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Manter o sistema operacional atualizado com pacotes de correção de segurança."><h3>🔒 Proteção Técnica</h3><p>Uso de criptografia, backups regulares e softwares atualizados.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Realizar oficinas de conscientização contra golpes de phishing para servidores."><h3>🧑‍🏫 Capacitação</h3><p>Educar equipes para identificar riscos e evitar vazamentos.</p><div class="practical-example"></div></div>
+</div></div>`},
+{section:"Glaucio da Silva · 2 de 3",title:"Um caso simples: formulário de inscrição",subtitle:"Organizando uma palestra acadêmica com responsabilidade.",body:`<div><div class="flow"><span>Planejar</span><b>→</b><span>Solicitar</span><b>→</b><span>Guardar</span><b>→</b><span>Usar</span><b>→</b><span>Descartar</span></div><ul><li><strong>Planejar:</strong> Definir claramente a finalidade do formulário.</li><li><strong>Solicitar:</strong> Pedir apenas nome e e-mail institucional.</li><li><strong>Descartar:</strong> Apagar o arquivo após a emissão dos certificados.</li></ul></div>`},
+{section:"Glaucio da Silva · 3 de 3",title:"Checklist: antes de clicar em “Enviar”",subtitle:"Cinco perguntas fundamentais para uma conduta digital consciente.",body:`<div><div class="grid">
+<div class="card" data-practical="Exemplo Prático: Questionar se a planilha realmente precisa ser enviada para outro setor."><h3>1 · Finalidade</h3><p>Sei exatamente por que estou coletando este dado?</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Apagar colunas com dados desnecessários antes de compartilhar um arquivo."><h3>2 · Necessidade</h3><p>Estou pedindo apenas o que é essencial?</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Conferir se o participante marcou o campo de consentimento informado."><h3>3 · Transparência</h3><p>O titular compreendeu o uso que será feito?</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Verificar se o link de compartilhamento possui restrição de senha."><h3>4 · Segurança</h3><p>O arquivo está protegido contra acessos públicos?</p><div class="practical-example"></div></div>
+</div><div class="callout">5 · Responsabilidade: Sei quem acionar em caso de incidente ou vazamento?</div></div>`},
+{section:"Quiz · participe",title:"Vamos testar o que aprendemos?",subtitle:"Uma plataforma de eventos pede nome, e-mail, CPF, religião e laudos médicos para confirmar presença. Qual atitude está alinhada à LGPD?",body:`<div><div class="quiz-options"><button class="quiz-option" data-answer="wrong">A) Coletar tudo, pois excesso de dados nunca é demais.</button><button class="quiz-option" data-answer="correct">B) Pedir apenas o necessário e justificar a finalidade.</button><button class="quiz-option" data-answer="wrong">C) Publicar a lista completa com todas as respostas.</button><button class="quiz-option" data-answer="wrong">D) Armazenar os dados indefinidamente por precaução.</button></div><div class="feedback" id="feedback" aria-live="polite">Selecione uma alternativa acima.</div></div>`},
+{section:"Conclusão",title:"Dados são valiosos. Pessoas vêm primeiro.",subtitle:"A tecnologia deve servir à sociedade — e nunca transformar a privacidade em detalhe.",body:`<div><div class="grid three">
+<div class="card" data-practical="Exemplo Prático: Mudar o hábito de postar fotos de alunos menores de idade sem autorização prévia."><h3>🧠 Consciência</h3><p>Reconhecer que nossas ações geram rastros digitais reais.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Consultar o setor jurídico da universidade antes de criar ferramentas públicas de coleta."><h3>⚖️ Ética e Lei</h3><p>Tratar dados com propósito legítimo e respeito aos direitos.</p><div class="practical-example"></div></div>
+<div class="card" data-practical="Exemplo Prático: Revisar permissões de compartilhamento em pastas na nuvem regularmente."><h3>🛡️ Proteção Ativa</h3><p>Assumir responsabilidade técnica em todo o ciclo de vida.</p><div class="practical-example"></div></div>
+</div><p class="quote" style="margin-top:14px">“Privacidade não é obstáculo à inovação. É pilar essencial de uma computação responsável.”</p></div>`},
+{section:"Referências",title:"Referências bibliográficas",subtitle:"Fontes e bases teóricas utilizadas na construção desta apresentação.",body:`<div><div class="refs"><p><strong>BRASIL.</strong> Lei nº 13.709, de 14 de agosto de 2018. Lei Geral de Proteção de Dados Pessoais (LGPD).</p><p><strong>BARBOSA CIRNE, R.; BUNGENSTAB, K. G. A.</strong> <em>Manual de Proteção de Dados Pessoais.</em> CGE-PE.</p><p><strong>ELLER, I. F. C.; SANTOS, G. V.</strong> Coleta, proteção e uso de dados pessoais em negócios. <em>GeSec</em>, 2024.</p><p><strong>NASCIMENTO, B. L. C.; SILVA, E. M.</strong> LGPD e repositórios institucionais. <em>Em Questão</em>, 2023.</p></div></div>`}
+];
+
+const canvas = document.getElementById('canvas');
+const viewport = document.getElementById('viewport');
+const svgConnections = document.getElementById('connections');
+const titles = [];
+const nodePositions = [];
+
+slides.forEach((s, i) => {
+  const el = document.createElement('section');
+  el.className = 'slide' + (s.type === 'cover' ? ' cover' : '');
+  
+  const cols = 6;
+  const col = i % cols;
+  const row = Math.floor(i / cols);
+  
+  const spacingX = 1800;
+  const spacingY = 1200;
+  
+  let x = col * spacingX;
+  let y = row * spacingY;
+  
+  if (row % 2 === 1) {
+    x = (cols - 1 - col) * spacingX;
+  }
+
+  el.style.setProperty('--x', x + 'px');
+  el.style.setProperty('--y', y + 'px');
+  el.dataset.x = x;
+  el.dataset.y = y;
+
+  nodePositions.push({ x: x + 550, y: y + 340 });
+
+  el.innerHTML = `
+    <div class="topline">
+      <span>${s.section}</span>
+      <span>CPAN-UFMS · COMPUTAÇÃO</span>
+    </div>
+    <div>
+      <div class="kicker">${s.type === 'cover' ? '🛡️ Apresentação Acadêmica' : `Privacidade e proteção de dados · ${String(i+1).padStart(2,'0')}`}</div>
+      ${s.type === 'cover' ? `<h1>${s.title}</h1>` : `<h2>${s.title}</h2>`}
+      ${s.subtitle ? `<p class="subtitle">${s.subtitle}</p>` : ''}
+      ${s.body || ''}
+    </div>
+    <div class="footer">
+      <span>Curso de Licenciatura em Computação — CPAN-UFMS</span>
+      <span>${i+1} / ${slides.length}</span>
+    </div>
+  `;
+  canvas.appendChild(el);
+  titles.push(s.title);
+});
+
+// Interatividade nos Cartões: Clique para Selecionar e Exibir Exemplo Prático
+document.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+
+  const isAlreadySelected = card.classList.contains('selected');
+  const slideEl = card.closest('.slide');
+
+  // Reseta os outros cartões do mesmo slide
+  slideEl.querySelectorAll('.card').forEach(c => {
+    c.classList.remove('selected');
+    const prac = c.querySelector('.practical-example');
+    if (prac) prac.innerHTML = '';
+  });
+
+  // Se não estava selecionado, ativa e renderiza o exemplo
+  if (!isAlreadySelected) {
+    card.classList.add('selected');
+    const practicalText = card.dataset.practical;
+    const pracBox = card.querySelector('.practical-example');
+    if (practicalText && pracBox) {
+      pracBox.innerHTML = practicalText;
+    }
+  }
+});
+
+function drawConnections() {
+  let svgContent = '';
+  for (let i = 0; i < nodePositions.length - 1; i++) {
+    const p1 = nodePositions[i];
+    const p2 = nodePositions[i + 1];
+    
+    const cx1 = (p1.x + p2.x) / 2;
+    const cy1 = p1.y;
+    const cx2 = (p1.x + p2.x) / 2;
+    const cy2 = p2.y;
+
+    svgContent += `
+      <path d="M ${p1.x} ${p1.y} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${p2.x} ${p2.y}" 
+            stroke="#0284c7" stroke-width="4" stroke-dasharray="10 10" fill="none" opacity="0.45"/>
+      <circle cx="${p1.x}" cy="${p1.y}" r="8" fill="#1d4ed8"/>
+    `;
+  }
+  const last = nodePositions[nodePositions.length - 1];
+  svgContent += `<circle cx="${last.x}" cy="${last.y}" r="8" fill="#1d4ed8"/>`;
+  svgConnections.innerHTML = svgContent;
+}
+drawConnections();
+
+let current = 0;
+let userZoom = 1;
+let baseScale = 1;
+let dragging = false;
+let startX = 0, startY = 0;
+let baseTX = 0, baseTY = 0;
+let offsetX = 0, offsetY = 0;
+
+function layout() {
+  const r = viewport.getBoundingClientRect();
+  const margin = 8;
+  baseScale = Math.min((r.width - margin) / 1100, (r.height - margin) / 680);
+  focus(false);
+}
+
+function focus(animate = true) {
+  const el = canvas.querySelectorAll('.slide')[current];
+  const x = +el.dataset.x;
+  const y = +el.dataset.y;
+  const scale = baseScale * userZoom;
+  const r = viewport.getBoundingClientRect();
+
+  const tx = (r.width / 2) - ((x + 550) * scale) + offsetX;
+  const ty = (r.height / 2) - ((y + 340) * scale) + offsetY;
+
+  canvas.style.transition = animate ? 'transform 1.2s cubic-bezier(0.22, 1, 0.36, 1)' : 'none';
+  canvas.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+
+  document.getElementById('counter').textContent = `${current + 1} / ${slides.length}`;
+  document.getElementById('miniTitle').textContent = titles[current];
+  document.getElementById('prev').disabled = (current === 0);
+  document.getElementById('next').disabled = (current === slides.length - 1);
+}
+
+function go(n) {
+  current = Math.max(0, Math.min(slides.length - 1, n));
+  userZoom = 1;
+  offsetX = offsetY = 0;
+  focus();
+}
+
+document.getElementById('prev').onclick = () => go(current - 1);
+document.getElementById('next').onclick = () => go(current + 1);
+document.getElementById('zoomIn').onclick = () => { userZoom = Math.min(2.5, userZoom * 1.2); focus(); };
+document.getElementById('zoomOut').onclick = () => { userZoom = Math.max(0.5, userZoom / 1.2); focus(); };
+
+document.getElementById('present').onclick = async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (e) {}
+};
+
+document.addEventListener('fullscreenchange', () => setTimeout(layout, 100));
+window.addEventListener('resize', layout);
+
+document.addEventListener('keydown', e => {
+  if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(current + 1); }
+  if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(current - 1); }
+  if (e.key === 'Home') go(0);
+  if (e.key === 'End') go(slides.length - 1);
+  if (e.key === '+' || e.key === '=') { userZoom = Math.min(2.5, userZoom * 1.15); focus(); }
+  if (e.key === '-') { userZoom = Math.max(0.5, userZoom / 1.15); focus(); }
+  if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen();
+});
+
+viewport.addEventListener('pointerdown', e => {
+  if (e.target.closest('button') || e.target.closest('.card') || e.target.closest('.quiz-option')) return;
+  dragging = true;
+  startX = e.clientX;
+  startY = e.clientY;
+  baseTX = offsetX;
+  baseTY = offsetY;
+  viewport.setPointerCapture(e.pointerId);
+  canvas.style.transition = 'none';
+});
+
+viewport.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  offsetX = baseTX + (e.clientX - startX);
+  offsetY = baseTY + (e.clientY - startY);
+  focus(false);
+});
+
+viewport.addEventListener('pointerup', () => dragging = false);
+viewport.addEventListener('pointercancel', () => dragging = false);
+
+viewport.addEventListener('wheel', e => {
+  if (e.ctrlKey || e.metaKey) {
+    e.preventDefault();
+    userZoom = Math.max(0.5, Math.min(2.5, userZoom * (e.deltaY < 0 ? 1.08 : 0.92)));
+    focus();
+  }
+}, { passive: false });
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('.quiz-option');
+  if (!b || b.disabled) return;
+  const all = [...document.querySelectorAll('.quiz-option')];
+  all.forEach(x => x.classList.remove('correct', 'wrong'));
+  b.classList.add(b.dataset.answer);
+  const feedback = document.getElementById('feedback');
+  if (b.dataset.answer === 'correct') {
+    all.forEach(x => x.disabled = true);
+    feedback.textContent = 'Correto! A organização deve limitar a coleta ao necessário e informar claramente a finalidade.';
+    feedback.style.color = 'var(--green)';
+  } else {
+    feedback.textContent = 'Ainda não! Pense nos princípios da finalidade, adequação e necessidade. Tente outra opção.';
+    feedback.style.color = 'var(--red)';
+  }
+});
+
+layout();
+</script>
+</body>
+</html>
