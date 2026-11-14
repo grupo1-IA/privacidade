@@ -14,6 +14,7 @@
   --pale: #f0f6ff;
   --line: #cbd5e1;
   --green: #15803d;
+  --emerald: #059669;
   --red: #b91c1c;
 }
 * { box-sizing: border-box; }
@@ -64,7 +65,7 @@ html, body {
   border: 2px solid #e2e8f0;
   border-radius: 32px;
   box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.45);
-  padding: 40px 56px;
+  padding: 36px 52px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -91,6 +92,9 @@ html, body {
   width: 100%;
   height: 6px;
   background: linear-gradient(90deg, var(--blue), var(--cyan), #38bdf8);
+}
+.slide.emerald-accent:after {
+  background: linear-gradient(90deg, #059669, #10b981, #34d399);
 }
 
 /* Ajustes para modo 100% tela cheia (Apresentação) */
@@ -141,11 +145,11 @@ h1 {
   color: var(--ink);
 }
 h2 {
-  font-size: 42px;
+  font-size: 40px;
   line-height: 1.12;
   letter-spacing: -0.03em;
   margin: 0 0 10px;
-  max-width: 960px;
+  max-width: 980px;
   color: var(--ink);
 }
 h3 {
@@ -173,12 +177,12 @@ ul {
 li { margin: 8px 0; }
 strong { color: var(--ink); }
 .subtitle {
-  font-size: 24px;
+  font-size: 23px;
   line-height: 1.35;
-  max-width: 950px;
+  max-width: 960px;
   color: #1e293b;
   font-weight: 500;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .meta {
   font-size: 19px;
@@ -268,23 +272,250 @@ strong { color: var(--ink); }
 /* Bloco do Exemplo Prático revelado ao clicar no card */
 .practical-example {
   display: none;
-  margin-top: 10px;
-  padding: 10px 14px;
+  margin-top: 8px;
+  padding: 8px 12px;
   border-left: 4px solid #0284c7;
-  font-size: 17px;
-  line-height: 1.4;
+  font-size: 15px;
+  line-height: 1.35;
   color: #0c4a6e;
   background: #e0f2fe;
   border-radius: 8px;
-  font-weight: 500;
-  animation: fadeIn 0.3s ease;
+  font-weight: 600;
+  animation: fadeIn 0.25s ease;
 }
-.card.selected .practical-example {
+.card.selected .practical-example,
+.w-stage-card.selected .practical-example,
+.w-box-card.selected .practical-example {
   display: block;
 }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-3px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- ESTILOS ESPECÍFICOS DOS SLIDES 11 E 12 (WELLINGTON - ONDA VERDE) --- */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+.svg-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+.svg-float-delay {
+  animation: floatSlow 4.5s ease-in-out 1.2s infinite;
+}
+.w-wave-wrap {
+  position: relative;
+  width: 100%;
+  height: 455px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.w-wave-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+.w-cols-4 {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  height: 100%;
+  align-items: stretch;
+}
+.w-stage-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 16px;
+  padding: 10px 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.25s ease;
+}
+.w-stage-card:hover {
+  background: rgba(236, 253, 245, 0.75);
+  border-color: #6ee7b7;
+  transform: translateY(-2px);
+}
+.w-stage-card.selected {
+  background: rgba(236, 253, 245, 0.95);
+  border-color: #059669;
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.14);
+}
+.w-stage-card .practical-example {
+  border-left-color: #059669;
+  background: #d1fae5;
+  color: #064e3b;
+  font-size: 13.5px;
+  padding: 6px 9px;
+  margin-top: 6px;
+}
+.w-step-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.w-num {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 0.95;
+  color: #0f172a;
+}
+.w-title-sm {
+  font-size: 13.5px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+.w-sub-sm {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #475569;
+  margin-top: 2px;
+}
+.w-svg-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 4px 0;
+}
+.w-svg-box svg {
+  width: 100%;
+  max-height: 205px;
+  overflow: visible;
+}
+.w-foot-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.w-foot-num {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 0.95;
+  color: #0f172a;
+}
+.w-foot-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #334155;
+}
+.w-foot-list li {
+  margin: 2px 0;
+}
+
+/* Cards do Slide 12 (Exemplos Práticos Comuns e Sensíveis) */
+.w-box-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px solid #cbd5e1;
+  border-radius: 18px;
+  padding: 14px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.w-box-card:hover {
+  border-color: #10b981;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(5, 150, 105, 0.14);
+}
+.w-box-card.selected {
+  border-color: #059669;
+  background: #ecfdf5;
+  box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
+}
+.w-box-card.sensitive {
+  border-color: #059669;
+  background: #f8fafc;
+}
+.w-box-card.sensitive.selected {
+  background: #ecfdf5;
+}
+.w-box-card .practical-example {
+  border-left-color: #059669;
+  background: #d1fae5;
+  color: #064e3b;
+  font-size: 13.5px;
+  padding: 6px 9px;
+}
+.w-badge-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.w-pill-green {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.w-pill-amber {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.w-check-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: #1e293b;
+  font-weight: 600;
+}
+.w-check-list li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 4px 0;
+}
+.w-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #059669;
+  flex-shrink: 0;
 }
 
 .callout {
@@ -658,21 +889,510 @@ const slides = [
 <div class="card" data-practical="Exemplo: E-mails institucionais vazados que passam a receber propostas falsas de investimento."><h3>📨 Abordagens</h3><p>Recebimento em massa de mensagens indesejadas, spam e golpes.</p><div class="practical-example"></div></div>
 <div class="card" data-practical="Exemplo: Divulgação indevida de fotografias ou conversas privadas em redes sociais."><h3>⚠️ Exposição</h3><p>Vazamento de dados íntimos causando constrangimento e danos morais.</p><div class="practical-example"></div></div>
 </div></div>`},
-{section:"Wellington Oliveira · 1 de 3",title:"O que são dados pessoais?",subtitle:"Informações relacionadas a uma pessoa natural identificada ou identificável.",body:`<div><div class="grid">
+{section:"Wellington Oliveira · 1 de 4",title:"O que são dados pessoais?",subtitle:"Informações relacionadas a uma pessoa natural identificada ou identificável.",body:`<div><div class="grid">
 <div class="card" data-practical="Exemplo: O número de matrícula acadêmica associado ao CPF do estudante."><h3>🆔 Identificação Direta</h3><p>Nome completo, CPF, RG, número de telefone, e-mail e endereço.</p><div class="practical-example"></div></div>
 <div class="card" data-practical="Exemplo: Cruzamento de rotas de GPS com horários de check-in para descobrir a residência de alguém."><h3>🧩 Identificação Indireta</h3><p>Conjunto de dados que cruzados identificam alguém (hábitos e rotas).</p><div class="practical-example"></div></div>
 </div><div class="callout"><strong>Exemplo:</strong> “João, matrícula 12345, aluno do curso X” vincula o registro diretamente ao indivíduo.</div></div>`},
-{section:"Wellington Oliveira · 2 de 3",title:"E os dados pessoais sensíveis?",subtitle:"Informações que exigem proteção reforçada devido ao alto potencial discriminatório.",body:`<div><div class="grid three">
+{section:"Wellington Oliveira · 2 de 4",title:"E os dados pessoais sensíveis?",subtitle:"Informações que exigem proteção reforçada devido ao alto potencial discriminatório.",body:`<div><div class="grid three">
 <div class="card" data-practical="Exemplo: Prontuário médico digital contendo histórico de tratamentos psiquiátricos ou diagnósticos clínicos."><h3>❤️ Saúde</h3><p>Laudos médicos, exames, diagnósticos e histórico clínico.</p><div class="practical-example"></div></div>
 <div class="card" data-practical="Exemplo: Cadastro de reconhecimento facial utilizado nas catracas de acesso de um prédio corporativo."><h3>🧬 Biometria e Genética</h3><p>Impressão digital, reconhecimento facial e DNA.</p><div class="practical-example"></div></div>
 <div class="card" data-practical="Exemplo: Ficha cadastral informando a filiação partidária ou religiosa de um trabalhador."><h3>🏛️ Convicções</h3><p>Origem racial, religião, opinião política e vida sexual.</p><div class="practical-example"></div></div>
 </div></div>`},
-{section:"Wellington Oliveira · 3 de 3",title:"Compare: pessoal × sensível",subtitle:"A diferença central reside na natureza do dado e no risco associado à exposição.",body:`<div><div class="grid">
-<div class="card" data-practical="Exemplo: Lista de e-mails da turma enviada para a coordenação pedagógica.">
-<span class="pill">DADO PESSOAL</span><h3 style="margin-top:8px">Cadastro Acadêmico</h3><p>Nome, matrícula e e-mail institucional.<br><strong>Risco:</strong> Contato indevido ou spam.</p><div class="practical-example"></div></div>
-<div class="card" data-practical="Exemplo: Laudo de deficiência apresentado para solicitar atendimento especial em provas.">
-<span class="pill" style="background:#fef2f2;color:#991b1b">DADO SENSÍVEL</span><h3 style="margin-top:8px">Registro de Saúde</h3><p>Laudos médicos e condições clínicas.<br><strong>Risco:</strong> Discriminação e dano à dignidade.</p><div class="practical-example"></div></div>
-</div></div>`},
+{
+  type: "emerald",
+  section: "Wellington Oliveira · 3 de 4",
+  title: `Exemplos de <span style="color:#059669">Dados Pessoais</span> no Dia a Dia`,
+  subtitle: "",
+  body: `<div class="w-wave-wrap">
+    <svg class="w-wave-bg" viewBox="0 0 1280 500" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="waveFillGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#10B981" stop-opacity="0.13" />
+          <stop offset="35%" stop-color="#059669" stop-opacity="0.16" />
+          <stop offset="70%" stop-color="#10B981" stop-opacity="0.13" />
+          <stop offset="100%" stop-color="#059669" stop-opacity="0.16" />
+        </linearGradient>
+        <linearGradient id="waveStrokeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#10B981" />
+          <stop offset="50%" stop-color="#059669" />
+          <stop offset="100%" stop-color="#10B981" />
+        </linearGradient>
+      </defs>
+      <path d="M 40 245 C 145 395, 250 395, 345 250 C 440 105, 545 105, 640 250 C 735 395, 840 395, 935 250 C 1030 105, 1135 105, 1245 255"
+            fill="none" stroke="url(#waveFillGrad)" stroke-width="58" stroke-linecap="round" />
+      <path d="M 55 218 C 150 365, 245 365, 345 220 C 445 75, 540 75, 640 220 C 740 365, 835 365, 935 220 C 1035 75, 1130 75, 1235 225"
+            fill="none" stroke="url(#waveStrokeGrad)" stroke-width="3.5" stroke-linecap="round" />
+      <path d="M 55 274 C 150 420, 245 420, 345 276 C 445 132, 540 132, 640 276 C 740 420, 835 420, 935 276 C 1035 132, 1130 132, 1235 280"
+            fill="none" stroke="#10B981" stroke-width="2" stroke-dasharray="6 6" stroke-opacity="0.55" stroke-linecap="round" />
+      <polygon points="278,312 292,304 285,319" fill="#059669" />
+      <polygon points="485,112 500,114 490,125" fill="#059669" />
+      <polygon points="868,312 882,304 875,319" fill="#059669" />
+      <polygon points="1078,112 1093,114 1083,125" fill="#059669" />
+    </svg>
+
+    <div class="w-cols-4">
+      <!-- COLUNA 1 -->
+      <div class="w-stage-card" data-practical="Atenção: O café precisa mesmo do seu CPF ou apenas de um apelido e e-mail para pontuar?">
+        <div class="w-step-head">
+          <span class="w-num">1</span>
+          <div>
+            <div class="w-title-sm">Cadastro no Café</div>
+            <div class="w-sub-sm">Programa de Fidelidade</div>
+          </div>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 300 250">
+            <g class="svg-float" transform="translate(18, 12)">
+              <rect x="6" y="22" width="44" height="30" rx="4" fill="#ECFDF5" stroke="#059669" stroke-width="2.2" />
+              <path d="M 2 22 L 10 8 L 46 8 L 54 22 Z" fill="#10B981" />
+              <path d="M 14 8 L 12 22 M 28 8 L 28 22 M 42 8 L 44 22" stroke="#FFFFFF" stroke-width="2" />
+              <rect x="22" y="34" width="12" height="18" rx="2" fill="#059669" />
+            </g>
+            <g class="svg-float-delay" transform="translate(105, 8)">
+              <rect x="4" y="14" width="30" height="20" rx="3" fill="#FFFFFF" stroke="#10B981" stroke-width="1.8" />
+              <path d="M 1 14 L 7 4 L 31 4 L 37 14 Z" fill="#D1FAE5" stroke="#10B981" stroke-width="1.8" />
+            </g>
+            <rect x="14" y="82" width="46" height="4" rx="2" fill="#CBD5E1" />
+            <rect x="20" y="68" width="12" height="14" rx="2" fill="#059669" />
+            <rect x="38" y="70" width="12" height="12" rx="2" fill="#94A3B8" />
+            <rect x="14" y="114" width="46" height="4" rx="2" fill="#CBD5E1" />
+            <path d="M 22 100 L 34 100 L 32 114 L 24 114 Z" fill="#10B981" />
+            <g class="svg-float" transform="translate(154, 6)">
+              <rect x="0" y="0" width="118" height="76" rx="8" fill="#0F172A" stroke="#10B981" stroke-width="2.5" />
+              <rect x="8" y="10" width="34" height="40" rx="5" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+              <circle cx="25" cy="23" r="7" fill="#34D399" />
+              <path d="M 14 44 C 14 35, 36 35, 36 44" fill="#34D399" />
+              <rect x="50" y="14" width="56" height="5" rx="2.5" fill="#10B981" />
+              <rect x="50" y="25" width="44" height="4" rx="2" fill="#64748B" />
+              <rect x="50" y="35" width="52" height="4" rx="2" fill="#64748B" />
+              <rect x="50" y="45" width="38" height="4" rx="2" fill="#34D399" />
+              <rect x="8" y="58" width="102" height="8" rx="4" fill="#059669" />
+            </g>
+            <path d="M 192 86 Q 178 106 164 116" fill="none" stroke="#10B981" stroke-width="3" stroke-linecap="round" />
+            <polygon points="159,119 169,119 164,110" fill="#10B981" />
+            <path d="M 62 175 L 68 112 C 70 100, 108 100, 114 114 L 122 175 Z" fill="#10B981" />
+            <path d="M 76 112 L 90 124 L 102 112" fill="none" stroke="#047857" stroke-width="2.5" />
+            <rect x="83" y="88" width="14" height="16" rx="6" fill="#FDBA74" />
+            <circle cx="92" cy="72" r="20" fill="#FDBA74" />
+            <path d="M 72 70 C 70 48, 106 44, 113 62 C 115 68, 108 70, 103 66 C 95 62, 82 65, 78 78 C 75 78, 72 75, 72 70 Z" fill="#0F172A" />
+            <path d="M 105 118 L 138 136 L 154 128" fill="none" stroke="#10B981" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="155" cy="127" r="6" fill="#FDBA74" />
+            <polygon points="12,158 215,176 286,158 286,184 215,204 12,184" fill="#D97706" opacity="0.22" />
+            <polygon points="12,154 215,172 286,154 286,164 215,182 12,164" fill="#B45309" opacity="0.35" />
+            <path d="M 164 166 L 176 144 L 188 166 Z" fill="#1E293B" />
+            <rect x="148" y="108" width="44" height="34" rx="5" transform="rotate(-12 170 125)" fill="#0F172A" stroke="#10B981" stroke-width="2" />
+            <rect x="153" y="113" width="34" height="24" rx="2" transform="rotate(-12 170 125)" fill="#ECFDF5" />
+            <g transform="translate(226, 128)">
+              <polygon points="4,8 28,8 24,36 8,36" fill="#FFFFFF" stroke="#0F172A" stroke-width="2" />
+              <rect x="6" y="16" width="20" height="10" fill="#10B981" />
+              <rect x="2" y="3" width="28" height="5" rx="2.5" fill="#0F172A" />
+            </g>
+            <g transform="translate(16, 186)">
+              <rect x="0" y="0" width="184" height="58" rx="9" fill="#ECFDF5" stroke="#059669" stroke-width="2.2" />
+              <circle cx="14" cy="15" r="3.5" fill="#059669" />
+              <text x="24" y="19" fill="#0F172A" font-size="11.5" font-weight="700">Nome Completo</text>
+              <circle cx="14" cy="31" r="3.5" fill="#059669" />
+              <text x="24" y="35" fill="#0F172A" font-size="11.5" font-weight="700">Número de Telefone</text>
+              <circle cx="14" cy="47" r="3.5" fill="#059669" />
+              <text x="24" y="51" fill="#0F172A" font-size="11.5" font-weight="700">E-mail</text>
+              <path d="M 168 0 L 168 -20" fill="none" stroke="#059669" stroke-width="2.5" />
+              <polygon points="163,-18 173,-18 168,-26" fill="#059669" />
+            </g>
+          </svg>
+        </div>
+        <div class="w-foot-box">
+          <span class="w-foot-num">1</span>
+          <div>
+            <div class="w-title-sm">Cadastro no Café</div>
+            <ul class="w-foot-list">
+              <li>Cadastro no sistema do programa de fidelidade</li>
+            </ul>
+          </div>
+        </div>
+        <div class="practical-example"></div>
+      </div>
+
+      <!-- COLUNA 2 -->
+      <div class="w-stage-card" data-practical="Exemplo: O trajeto diário casa → universidade revela sua rotina e endereço mesmo sem você digitar o CEP.">
+        <div class="w-step-head">
+          <span class="w-num">2</span>
+          <div>
+            <div class="w-title-sm">Usando Aplicativo de Transporte</div>
+          </div>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 300 250">
+            <g class="svg-float" transform="translate(88, 12)">
+              <path d="M 14 22 L 24 8 L 62 8 L 74 22 L 88 24 C 92 25, 94 28, 94 32 L 94 38 L 6 38 L 6 30 C 6 26, 9 23, 14 22 Z" fill="#10B981" />
+              <path d="M 27 11 L 43 11 L 43 21 L 20 21 Z" fill="#ECFDF5" />
+              <path d="M 47 11 L 60 11 L 69 21 L 47 21 Z" fill="#ECFDF5" />
+              <circle cx="24" cy="38" r="8" fill="#0F172A" />
+              <circle cx="24" cy="38" r="3.5" fill="#CBD5E1" />
+              <circle cx="74" cy="38" r="8" fill="#0F172A" />
+              <circle cx="74" cy="38" r="3.5" fill="#CBD5E1" />
+            </g>
+            <g transform="translate(226, 8)">
+              <ellipse cx="26" cy="54" rx="24" ry="8" fill="#D1FAE5" />
+              <rect x="16" y="24" width="20" height="28" rx="2" fill="#E2E8F0" stroke="#64748B" stroke-width="1.5" />
+              <polygon points="14,24 26,10 38,24" fill="#059669" />
+              <rect x="23" y="4" width="6" height="8" fill="#0F172A" />
+            </g>
+            <g class="svg-float-delay" transform="translate(154, 62)">
+              <path d="M 16 0 C 7 0, 0 7, 0 16 C 0 28, 16 42, 16 42 C 16 42, 32 28, 32 16 C 32 7, 25 0, 16 0 Z" fill="#059669" />
+              <circle cx="16" cy="15" r="6" fill="#FFFFFF" />
+              <path d="M 16 45 C 16 62, 54 54, 52 72 C 50 88, 22 86, 26 102" fill="none" stroke="#059669" stroke-width="2.5" stroke-dasharray="5 4" stroke-linecap="round" />
+            </g>
+            <g class="svg-float" transform="translate(14, 114)">
+              <rect x="0" y="0" width="64" height="42" rx="7" fill="#ECFDF5" stroke="#10B981" stroke-width="2" />
+              <rect x="8" y="10" width="16" height="11" rx="2" fill="#10B981" />
+              <rect x="8" y="28" width="44" height="4" rx="2" fill="#059669" />
+              <polygon points="56,42 64,42 64,50" fill="#10B981" />
+            </g>
+            <g transform="translate(68, 86)">
+              <path d="M 24 156 L 30 96 C 32 82, 82 82, 86 96 L 94 156 Z" fill="#10B981" />
+              <path d="M 44 86 L 58 102 L 72 86" fill="none" stroke="#047857" stroke-width="2.5" />
+              <rect x="50" y="64" width="16" height="20" rx="7" fill="#FDBA74" />
+              <circle cx="58" cy="46" r="23" fill="#FDBA74" />
+              <path d="M 35 44 C 34 20, 82 18, 82 44 C 82 36, 72 30, 58 32 C 44 34, 38 38, 35 44 Z" fill="#0F172A" />
+              <circle cx="51" cy="45" r="2.2" fill="#0F172A" />
+              <circle cx="66" cy="45" r="2.2" fill="#0F172A" />
+              <path d="M 52 55 Q 58 61 65 55" fill="none" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" />
+              <path d="M 82 98 L 122 114 L 138 92" fill="none" stroke="#10B981" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+            <g transform="translate(194, 114)">
+              <rect x="0" y="0" width="46" height="82" rx="8" fill="#0F172A" />
+              <rect x="4" y="7" width="38" height="68" rx="4" fill="#ECFDF5" />
+              <path d="M 4 24 L 42 36 M 18 7 L 12 75 M 28 7 L 34 75" stroke="#CBD5E1" stroke-width="3" />
+              <path d="M 14 62 L 22 44 L 30 24" fill="none" stroke="#059669" stroke-width="3.5" stroke-linecap="round" />
+              <circle cx="30" cy="22" r="5" fill="#10B981" />
+              <circle cx="14" cy="62" r="4" fill="#0F172A" />
+            </g>
+          </svg>
+        </div>
+        <div class="w-foot-box">
+          <span class="w-foot-num">2</span>
+          <div>
+            <div class="w-title-sm">Usando Aplicativo de Transporte</div>
+            <ul class="w-foot-list">
+              <li>HISTÓRICO DE VIAGENS</li>
+              <li>LOCALIZAÇÃO EM TEMPO REAL (GPS)</li>
+              <li>DADOS DE PAGAMENTO (Cartão)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="practical-example"></div>
+      </div>
+
+      <!-- COLUNA 3 -->
+      <div class="w-stage-card" data-practical="Exemplo: Ao baixar um e-book gratuito, sites pedem CPF e data de nascimento sem necessidade real.">
+        <div class="w-step-head">
+          <span class="w-num">3</span>
+          <div>
+            <div class="w-title-sm">Preenchendo Formulário Online</div>
+          </div>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 300 250">
+            <g class="svg-float" transform="translate(178, 12)">
+              <path d="M 24 52 L 88 52 C 102 52, 112 42, 112 30 C 112 19, 103 10, 92 10 C 89 4, 81 0, 72 0 C 60 0, 50 8, 48 19 C 45 18, 41 17, 37 17 C 24 17, 14 27, 14 39 C 14 46, 18 52, 24 52 Z" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="2" />
+              <path d="M 10 56 L 64 56 C 74 56, 82 49, 82 40 C 82 32, 75 25, 67 25 C 64 20, 58 17, 51 17 C 42 17, 35 23, 33 31 C 21 31, 10 38, 10 47 C 10 52, 10 56, 10 56 Z" fill="#ECFDF5" stroke="#10B981" stroke-width="2" />
+            </g>
+            <g class="svg-float-delay" transform="translate(12, 34)">
+              <rect x="0" y="0" width="132" height="104" rx="10" fill="#FFFFFF" stroke="#059669" stroke-width="2.5" />
+              <rect x="0" y="0" width="132" height="18" rx="8" fill="#059669" />
+              <circle cx="12" cy="9" r="2.5" fill="#FFFFFF" />
+              <circle cx="20" cy="9" r="2.5" fill="#FFFFFF" />
+              <circle cx="28" cy="9" r="2.5" fill="#FFFFFF" />
+              <rect x="10" y="25" width="112" height="15" rx="3" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2" />
+              <text x="15" y="35" fill="#0F172A" font-size="7.5" font-weight="800">NOME</text>
+              <rect x="10" y="44" width="112" height="15" rx="3" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2" />
+              <text x="15" y="54" fill="#0F172A" font-size="7.5" font-weight="800">CPF</text>
+              <rect x="10" y="63" width="112" height="15" rx="3" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.2" />
+              <text x="15" y="73" fill="#0F172A" font-size="7.2" font-weight="800">ENDEREÇO RESIDENCIAL</text>
+              <rect x="10" y="82" width="112" height="15" rx="3" fill="#ECFDF5" stroke="#10B981" stroke-width="1.2" />
+              <text x="15" y="92" fill="#059669" font-size="7.2" font-weight="800">DATA DE NASCIMENTO</text>
+            </g>
+            <path d="M 148 72 Q 178 72 196 58" fill="none" stroke="#10B981" stroke-width="3.5" stroke-linecap="round" />
+            <polygon points="192,53 203,53 198,64" fill="#10B981" />
+            <polygon points="18,186 196,214 276,188 276,198 196,225 18,196" fill="#CBD5E1" />
+            <rect x="44" y="196" width="8" height="44" fill="#94A3B8" />
+            <rect x="192" y="218" width="8" height="24" fill="#94A3B8" />
+            <g transform="translate(88, 134)">
+              <rect x="0" y="0" width="68" height="46" rx="4" fill="#0F172A" />
+              <rect x="4" y="4" width="60" height="38" rx="2" fill="#ECFDF5" />
+              <rect x="10" y="10" width="48" height="6" rx="2" fill="#10B981" />
+              <rect x="10" y="20" width="38" height="4" rx="2" fill="#94A3B8" />
+              <rect x="10" y="28" width="44" height="4" rx="2" fill="#94A3B8" />
+              <polygon points="0,46 68,46 82,56 12,56" fill="#475569" />
+            </g>
+            <g transform="translate(174, 88)">
+              <circle cx="48" cy="30" r="19" fill="#FDBA74" />
+              <path d="M 32 24 C 34 6, 68 8, 68 28 C 68 38, 62 44, 56 42 C 56 30, 46 24, 32 24 Z" fill="#0F172A" />
+              <path d="M 24 106 L 34 56 C 38 46, 66 48, 70 60 L 76 112 Z" fill="#10B981" />
+              <path d="M 42 64 L 12 88 L -12 88" fill="none" stroke="#059669" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" />
+              <rect x="64" y="84" width="14" height="48" rx="6" fill="#1E293B" />
+              <rect x="26" y="124" width="48" height="10" rx="5" fill="#1E293B" />
+              <rect x="46" y="134" width="8" height="20" fill="#475569" />
+            </g>
+          </svg>
+        </div>
+        <div class="w-foot-box">
+          <span class="w-foot-num">3</span>
+          <div>
+            <div class="w-title-sm">Preenchendo Formulário Online</div>
+            <ul class="w-foot-list">
+              <li>CPF</li>
+              <li>ENDEREÇO RESIDENCIAL</li>
+              <li>DATA DE NASCIMENTO</li>
+            </ul>
+          </div>
+        </div>
+        <div class="practical-example"></div>
+      </div>
+
+      <!-- COLUNA 4 -->
+      <div class="w-stage-card" data-practical="Exemplo: Compras digitais combinam dados comuns (cartão) com dados sensíveis (biometria facial para antifraude).">
+        <div class="w-step-head">
+          <span class="w-num">4</span>
+          <div>
+            <div class="w-title-sm">Compras ou Serviços pela Internet</div>
+          </div>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 300 250">
+            <g class="svg-float" transform="translate(46, 12)">
+              <text x="58" y="12" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="800">DADOS</text>
+              <text x="58" y="24" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="800">BANCÁRIOS</text>
+              <circle cx="58" cy="48" r="19" fill="#10B981" />
+              <rect x="46" y="40" width="24" height="16" rx="3" fill="#FFFFFF" />
+              <rect x="46" y="44" width="24" height="3.5" fill="#0F172A" />
+              <circle cx="64" cy="51" r="2.5" fill="#059669" />
+            </g>
+            <g class="svg-float-delay" transform="translate(216, 14)">
+              <path d="M 24 0 L 46 8 L 46 26 C 46 40, 24 52, 24 52 C 24 52, 2 40, 2 26 L 2 8 Z" fill="#10B981" stroke="#059669" stroke-width="2" />
+              <path d="M 14 26 L 21 33 L 35 18" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
+            <g class="svg-float-delay" transform="translate(6, 62)">
+              <circle cx="38" cy="18" r="15" fill="#059669" />
+              <circle cx="38" cy="14" r="5" fill="#FFFFFF" />
+              <path d="M 29 27 C 29 21, 47 21, 47 27" fill="#FFFFFF" />
+              <text x="38" y="46" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="800">FOTO DO</text>
+              <text x="38" y="58" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="800">PERFIL</text>
+            </g>
+            <g class="svg-float" transform="translate(8, 146)">
+              <circle cx="44" cy="20" r="18" fill="#ECFDF5" stroke="#10B981" stroke-width="2.2" />
+              <path d="M 36 24 C 36 14, 52 14, 52 24 M 39 27 C 39 18, 49 18, 49 27 M 42 29 C 42 22, 46 22, 46 29 M 34 19 C 35 10, 53 10, 54 19" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" />
+              <text x="44" y="50" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="800">SENHAS OU</text>
+              <text x="44" y="62" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="800">BIOMETRIA</text>
+            </g>
+            <g transform="translate(102, 92)">
+              <rect x="0" y="0" width="66" height="52" rx="7" transform="rotate(-14 33 26)" fill="#0F172A" stroke="#10B981" stroke-width="2.5" />
+              <rect x="5" y="5" width="56" height="42" rx="4" transform="rotate(-14 33 26)" fill="#FFFFFF" />
+              <rect x="10" y="14" width="18" height="22" rx="3" transform="rotate(-14 33 26)" fill="#D1FAE5" />
+              <circle cx="19" cy="21" r="4" transform="rotate(-14 33 26)" fill="#059669" />
+              <rect x="33" y="16" width="22" height="4" rx="2" transform="rotate(-14 33 26)" fill="#10B981" />
+              <rect x="33" y="24" width="18" height="3.5" rx="1.7" transform="rotate(-14 33 26)" fill="#94A3B8" />
+              <rect x="33" y="31" width="20" height="3.5" rx="1.7" transform="rotate(-14 33 26)" fill="#94A3B8" />
+            </g>
+            <g transform="translate(162, 74)">
+              <circle cx="52" cy="34" r="22" fill="#FDBA74" />
+              <path d="M 32 30 C 32 8, 76 8, 76 34 C 76 44, 68 48, 62 44 C 60 32, 46 28, 32 30 Z" fill="#0F172A" />
+              <path d="M 24 166 L 32 74 C 36 60, 76 62, 82 78 L 90 166 Z" fill="#10B981" />
+              <path d="M 38 82 L 4 74" fill="none" stroke="#059669" stroke-width="13" stroke-linecap="round" />
+              <circle cx="2" cy="74" r="6" fill="#FDBA74" />
+              <path d="M 62 92 L 16 116 L -8 86" fill="none" stroke="#10B981" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="-9" cy="84" r="6" fill="#FDBA74" />
+            </g>
+          </svg>
+        </div>
+        <div class="w-foot-box">
+          <span class="w-foot-num">4</span>
+          <div>
+            <div class="w-title-sm">Compras ou Serviços pela Internet</div>
+            <ul class="w-foot-list">
+              <li>DADOS BANCÁRIOS</li>
+              <li>FOTO DO PERFIL</li>
+              <li>SENHAS OU BIOMETRIA</li>
+            </ul>
+          </div>
+        </div>
+        <div class="practical-example"></div>
+      </div>
+    </div>
+  </div>`
+},
+{
+  type: "emerald",
+  section: "Wellington Oliveira · 4 de 4",
+  title: `Exemplos Práticos: <span style="color:#059669">Dados Pessoais</span> Comuns e Sensíveis`,
+  subtitle: "Como identificar os tipos de dados coletados em situações cotidianas (LGPD)",
+  body: `<div class="w-wave-wrap" style="height: 410px;">
+    <svg class="w-wave-bg" viewBox="0 0 1280 460" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M 30 230 C 180 120, 300 340, 450 230 C 600 120, 720 340, 870 230 C 1020 120, 1140 310, 1250 220"
+            fill="none" stroke="#10B981" stroke-opacity="0.16" stroke-width="46" stroke-linecap="round" />
+      <path d="M 30 230 C 180 120, 300 340, 450 230 C 600 120, 720 340, 870 230 C 1020 120, 1140 310, 1250 220"
+            fill="none" stroke="#059669" stroke-opacity="0.45" stroke-width="3" stroke-dasharray="8 6" stroke-linecap="round" />
+    </svg>
+
+    <div class="w-cols-4">
+      <!-- CARD 1 -->
+      <div class="w-box-card" data-practical="Exemplo: Crachá universitário ou cadastro no SIGAA com nome completo e número de CPF.">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="w-badge-num">1</span>
+            <div class="w-title-sm">Identificação Direta</div>
+          </div>
+          <span class="w-pill-green">Dado Pessoal Comum</span>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 220 130" style="max-height:115px;">
+            <rect x="28" y="16" width="164" height="98" rx="12" fill="#ECFDF5" stroke="#10B981" stroke-width="2.5" />
+            <rect x="28" y="16" width="164" height="22" rx="10" fill="#059669" />
+            <circle cx="44" cy="27" r="3" fill="#FFFFFF" />
+            <rect x="54" y="24" width="62" height="6" rx="3" fill="#FFFFFF" />
+            <rect x="42" y="48" width="44" height="52" rx="7" fill="#FFFFFF" stroke="#10B981" stroke-width="2" />
+            <circle cx="64" cy="64" r="9" fill="#10B981" />
+            <path d="M 50 92 C 50 80, 78 80, 78 92" fill="#10B981" />
+            <rect x="98" y="52" width="78" height="7" rx="3.5" fill="#0F172A" />
+            <rect x="98" y="66" width="64" height="6" rx="3" fill="#64748B" />
+            <rect x="98" y="79" width="72" height="6" rx="3" fill="#64748B" />
+            <rect x="98" y="92" width="48" height="7" rx="3.5" fill="#059669" />
+            <circle cx="184" cy="104" r="14" fill="#0F172A" />
+            <path d="M 178 104 L 182 108 L 190 99" fill="none" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <ul class="w-check-list">
+          <li><span class="w-dot"></span>Nome completo</li>
+          <li><span class="w-dot"></span>RG e CPF</li>
+          <li><span class="w-dot"></span>CNH (Habilitação)</li>
+          <li><span class="w-dot"></span>Título de eleitor</li>
+          <li><span class="w-dot"></span>Passaporte</li>
+        </ul>
+        <div class="practical-example"></div>
+      </div>
+
+      <!-- CARD 2 -->
+      <div class="w-box-card" data-practical="Exemplo: Endereço IP registrado ao acessar o portal da UFMS permite estimar a cidade de origem.">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="w-badge-num">2</span>
+            <div class="w-title-sm">Contato e Localização</div>
+          </div>
+          <span class="w-pill-green">Dado Pessoal Comum</span>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 220 130" style="max-height:115px;">
+            <rect x="78" y="10" width="64" height="110" rx="11" fill="#0F172A" />
+            <rect x="83" y="18" width="54" height="94" rx="6" fill="#F8FAFC" />
+            <path d="M 83 45 L 137 62 M 102 18 L 96 112 M 120 18 L 126 112" stroke="#CBD5E1" stroke-width="3" />
+            <path d="M 110 34 C 101 34, 94 41, 94 50 C 94 62, 110 76, 110 76 C 110 76, 126 62, 126 50 C 126 41, 119 34, 110 34 Z" fill="#059669" />
+            <circle cx="110" cy="49" r="5.5" fill="#FFFFFF" />
+            <g transform="translate(24, 52)">
+              <rect x="0" y="0" width="48" height="34" rx="6" fill="#ECFDF5" stroke="#10B981" stroke-width="2.2" />
+              <path d="M 3 4 L 24 19 L 45 4" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" />
+            </g>
+            <g transform="translate(152, 34)">
+              <circle cx="18" cy="24" r="16" fill="#ECFDF5" stroke="#10B981" stroke-width="2" />
+              <path d="M 11 24 A 7 7 0 0 1 25 24 M 8 20 A 11 11 0 0 1 28 20" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" />
+              <circle cx="18" cy="27" r="3" fill="#0F172A" />
+            </g>
+          </svg>
+        </div>
+        <ul class="w-check-list">
+          <li><span class="w-dot"></span>E-mail pessoal</li>
+          <li><span class="w-dot"></span>Telefone / WhatsApp</li>
+          <li><span class="w-dot"></span>Endereço residencial</li>
+          <li><span class="w-dot"></span>CEP e bairro</li>
+          <li><span class="w-dot"></span>Geolocalização (IP / GPS)</li>
+        </ul>
+        <div class="practical-example"></div>
+      </div>
+
+      <!-- CARD 3 -->
+      <div class="w-box-card" data-practical="Exemplo: Cookies de navegação em e-commerce criam perfil de consumo para exibir anúncios personalizados.">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="w-badge-num">3</span>
+            <div class="w-title-sm">Dados Financeiros e Digitais</div>
+          </div>
+          <span class="w-pill-green">Dado Pessoal Comum</span>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 220 130" style="max-height:115px;">
+            <rect x="26" y="14" width="136" height="86" rx="10" fill="#F8FAFC" stroke="#0F172A" stroke-width="2.2" />
+            <rect x="26" y="14" width="136" height="18" rx="8" fill="#0F172A" />
+            <circle cx="38" cy="23" r="2.5" fill="#10B981" />
+            <circle cx="46" cy="23" r="2.5" fill="#94A3B8" />
+            <rect x="58" y="19" width="84" height="8" rx="4" fill="#1E293B" />
+            <rect x="38" y="42" width="54" height="8" rx="3" fill="#10B981" />
+            <rect x="38" y="56" width="76" height="6" rx="3" fill="#CBD5E1" />
+            <rect x="38" y="68" width="62" height="6" rx="3" fill="#CBD5E1" />
+            <g transform="translate(88, 58)">
+              <rect x="0" y="0" width="96" height="58" rx="9" fill="#059669" stroke="#FFFFFF" stroke-width="2" />
+              <rect x="12" y="14" width="20" height="14" rx="3" fill="#FDE68A" />
+              <rect x="12" y="38" width="56" height="5" rx="2.5" fill="#FFFFFF" />
+              <circle cx="76" cy="40" r="6" fill="#34D399" />
+              <circle cx="83" cy="40" r="6" fill="#A7F3D0" fill-opacity="0.8" />
+            </g>
+            <g transform="translate(36, 82)">
+              <circle cx="20" cy="20" r="18" fill="#ECFDF5" stroke="#10B981" stroke-width="2.2" />
+              <circle cx="14" cy="14" r="2.2" fill="#0F172A" />
+              <circle cx="25" cy="16" r="2" fill="#0F172A" />
+              <circle cx="17" cy="25" r="2.4" fill="#0F172A" />
+              <circle cx="26" cy="25" r="1.8" fill="#0F172A" />
+            </g>
+          </svg>
+        </div>
+        <ul class="w-check-list">
+          <li><span class="w-dot"></span>Cartão e conta bancária</li>
+          <li><span class="w-dot"></span>Histórico de compras</li>
+          <li><span class="w-dot"></span>Cookies e navegação</li>
+          <li><span class="w-dot"></span>Login e credenciais</li>
+        </ul>
+        <div class="practical-example"></div>
+      </div>
+
+      <!-- CARD 4 -->
+      <div class="w-box-card sensitive" data-practical="Exemplo: Digital na academia ou laudo médico na perícia exigem consentimento específico (Art. 11 da LGPD).">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span class="w-badge-num" style="background:#059669;">4</span>
+            <div class="w-title-sm">Dados Pessoais Sensíveis</div>
+          </div>
+          <span class="w-pill-amber">● Proteção Reforçada (Art. 5º, II)</span>
+        </div>
+        <div class="w-svg-box">
+          <svg viewBox="0 0 220 130" style="max-height:115px;">
+            <rect x="34" y="14" width="84" height="102" rx="10" fill="#FFFFFF" stroke="#059669" stroke-width="2.2" />
+            <rect x="56" y="8" width="40" height="12" rx="4" fill="#0F172A" />
+            <rect x="71" y="30" width="10" height="26" rx="2" fill="#10B981" />
+            <rect x="63" y="38" width="26" height="10" rx="2" fill="#10B981" />
+            <rect x="48" y="68" width="56" height="6" rx="3" fill="#CBD5E1" />
+            <rect x="48" y="80" width="46" height="6" rx="3" fill="#CBD5E1" />
+            <rect x="48" y="92" width="52" height="6" rx="3" fill="#10B981" />
+            <g transform="translate(128, 18)">
+              <circle cx="30" cy="30" r="26" fill="#ECFDF5" stroke="#059669" stroke-width="2.2" />
+              <path d="M 18 36 C 18 20, 42 20, 42 36 M 22 40 C 22 25, 38 25, 38 40 M 26 43 C 26 30, 34 30, 34 43 M 15 29 C 17 14, 43 14, 45 29" fill="none" stroke="#059669" stroke-width="2.3" stroke-linecap="round" />
+            </g>
+            <g transform="translate(134, 72)">
+              <path d="M 12 18 L 12 11 C 12 5, 28 5, 28 11 L 28 18" fill="none" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round" />
+              <rect x="4" y="17" width="32" height="26" rx="6" fill="#0F172A" />
+              <circle cx="20" cy="28" r="3.5" fill="#F59E0B" />
+              <rect x="18.5" y="30" width="3" height="6" rx="1.5" fill="#F59E0B" />
+            </g>
+          </svg>
+        </div>
+        <ul class="w-check-list" style="color:#0f172a; font-weight:700;">
+          <li><span class="w-dot"></span>Biometria e face</li>
+          <li><span class="w-dot"></span>Saúde e exames</li>
+          <li><span class="w-dot"></span>Origem racial/étnica</li>
+          <li><span class="w-dot"></span>Religião ou política</li>
+        </ul>
+        <div class="practical-example"></div>
+      </div>
+    </div>
+  </div>`
+},
 {section:"Soraia Miranda · 1 de 3",title:"LGPD: para que existe?",subtitle:"A Lei nº 13.709/2018 estabelece diretrizes rígidas para o tratamento de dados.",body:`<div><div class="split-layout"><div class="split-content"><p>Seu objetivo principal é proteger os direitos fundamentais de liberdade, privacidade e o livre desenvolvimento da personalidade.</p><div class="flow"><span>Coletar</span><b>→</b><span>Usar</span><b>→</b><span>Armazenar</span><b>→</b><span>Compartilhar</span><b>→</b><span>Eliminar</span></div></div><div class="split-visual">${svgLgpd}</div></div></div>`},
 {section:"Soraia Miranda · 2 de 3",title:"Princípios que orientam o tratamento",subtitle:"Toda operação com dados deve ser respaldada por limites claros.",body:`<div><div class="grid three">
 <div class="card" data-practical="Exemplo: Coletar e-mail exclusivamente para envio de avisos de notas escolares."><h3>🎯 Finalidade</h3><p>Propósito legítimo, específico e informado ao titular.</p><div class="practical-example"></div></div>
@@ -726,7 +1446,7 @@ const nodePositions = [];
 
 slides.forEach((s, i) => {
   const el = document.createElement('section');
-  el.className = 'slide' + (s.type === 'cover' ? ' cover' : '');
+  el.className = 'slide' + (s.type === 'cover' ? ' cover' : '') + (s.type === 'emerald' ? ' emerald-accent' : '');
   
   const cols = 6;
   const col = i % cols;
@@ -749,13 +1469,15 @@ slides.forEach((s, i) => {
 
   nodePositions.push({ x: x + 550, y: y + 340 });
 
+  const kickerColor = s.type === 'emerald' ? 'style="color:#059669"' : '';
+
   el.innerHTML = `
     <div class="topline">
       <span>${s.section}</span>
       <span>CPAN-UFMS · COMPUTAÇÃO</span>
     </div>
     <div>
-      <div class="kicker">${s.type === 'cover' ? '🛡️' : `Privacidade e proteção de dados · ${String(i+1).padStart(2,'0')}`}</div>
+      <div class="kicker" ${kickerColor}>${s.type === 'cover' ? '🛡️' : `Privacidade e proteção de dados · ${String(i+1).padStart(2,'0')}`}</div>
       ${s.type === 'cover' ? `<h1>${s.title}</h1>` : `<h2>${s.title}</h2>`}
       ${s.subtitle ? `<p class="subtitle">${s.subtitle}</p>` : ''}
       ${s.body || ''}
@@ -769,13 +1491,13 @@ slides.forEach((s, i) => {
 });
 
 document.addEventListener('click', e => {
-  const card = e.target.closest('.card');
+  const card = e.target.closest('.card, .w-stage-card, .w-box-card');
   if (!card) return;
 
   const isAlreadySelected = card.classList.contains('selected');
   const slideEl = card.closest('.slide');
 
-  slideEl.querySelectorAll('.card').forEach(c => {
+  slideEl.querySelectorAll('.card, .w-stage-card, .w-box-card').forEach(c => {
     c.classList.remove('selected');
     const prac = c.querySelector('.practical-example');
     if (prac) prac.innerHTML = '';
@@ -896,7 +1618,7 @@ document.addEventListener('keydown', e => {
 
 viewport.addEventListener('pointerdown', e => {
   if (isFullscreen()) return;
-  if (e.target.closest('button') || e.target.closest('.card') || e.target.closest('.quiz-option')) return;
+  if (e.target.closest('button') || e.target.closest('.card') || e.target.closest('.w-stage-card') || e.target.closest('.w-box-card') || e.target.closest('.quiz-option')) return;
   dragging = true;
   startX = e.clientX;
   startY = e.clientY;
