@@ -817,7 +817,7 @@ const svgForm = `<svg viewBox="0 0 240 220" fill="none" xmlns="http://www.w3.org
 const slides = [
 {
   type:"cover",
-  section:"Seminário Temático",
+  section:"Seminário",
   title:"Privacidade e Proteção de Dados",
   subtitle:"O que acontece com nossas informações no ambiente digital?",
   body:`<div>
@@ -1616,7 +1616,50 @@ document.addEventListener('keydown', e => {
   if (e.key === '-') { userZoom = Math.max(0.5, userZoom / 1.15); focus(); }
 });
 
+/* Navegação por gesto de deslizar (Swipe) no celular / touchscreen */
+let touchStartX = 0;
+let touchStartY = 0;
+let touchStartTime = 0;
+let isMultiTouch = false;
+
+viewport.addEventListener('touchstart', e => {
+  if (e.touches.length > 1) {
+    isMultiTouch = true;
+    return;
+  }
+  isMultiTouch = false;
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  touchStartTime = Date.now();
+}, { passive: true });
+
+viewport.addEventListener('touchmove', e => {
+  if (e.touches.length > 1) {
+    isMultiTouch = true;
+  }
+}, { passive: true });
+
+viewport.addEventListener('touchend', e => {
+  if (isMultiTouch || e.changedTouches.length === 0) return;
+
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  const dt = Date.now() - touchStartTime;
+
+  /* Considera swipe horizontal se o movimento lateral for maior que 45px, predominante sobre o vertical e rápido (< 700ms) */
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2 && dt < 700) {
+    dragging = false;
+    if (dx < 0) {
+      go(current + 1);
+    } else {
+      go(current - 1);
+    }
+  }
+}, { passive: true });
+
+/* Arraste com mouse no desktop */
 viewport.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'touch') return;
   if (isFullscreen()) return;
   if (e.target.closest('button') || e.target.closest('.card') || e.target.closest('.w-stage-card') || e.target.closest('.w-box-card') || e.target.closest('.quiz-option')) return;
   dragging = true;
